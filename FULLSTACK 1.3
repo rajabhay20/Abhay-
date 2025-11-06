@@ -1,0 +1,87 @@
+To create an interactive SVG-based drawing tool using DOM and mouse event handling in
+JavaScript.
+
+<!DOCTYPE html>
+<html lang="en">
+ <head> <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Interactive SVG Drawing Tool</title>
+ <style>
+ body { font-family: Arial, sans-serif; display: flex; justify-content: center; padding:
+40px; background-color: #f7f7f7; }
+ .drawing-area {
+ border: 2px solid #444;
+ background: #fff;
+Section/Group: 602-A
+UID: 23BCS13402 Student Name: Atul
+ 
+ cursor: crosshair;
+ }
+ #controls {
+ margin-top: 15px;
+ text-align: center;
+ }
+ button {
+ padding: 8px 16px;
+ font-size: 14px;
+ background-color: #1976d2;
+ color: white;
+ border: none;
+ border-radius: 4px;
+ cursor: pointer; margin: 5px;
+ }
+ button:hover {
+ background-color: #145a96;
+ }
+</style>
+</head>
+<body>
+ <div>
+ <svg id="svgCanvas" class="drawing-area" width="800" height="500"> </svg>
+ <div id="controls">
+ <button onclick="clearCanvas()">Clear</button>
+ </div>
+ </div>
+ <script>
+ 
+ const svg = document.getElementById('svgCanvas');
+ let isDrawing = false;
+ let currentLine = null;
+ svg.addEventListener('mousedown', startDrawing);
+ svg.addEventListener('mousemove', draw);
+ svg.addEventListener('mouseup', stopDrawing);
+ svg.addEventListener('mouseleave', stopDrawing);
+ function startDrawing(event) {
+ isDrawing = true;
+ const { x, y } = getMousePosition(event);
+ currentLine = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+ currentLine.setAttribute("fill", "none");
+ currentLine.setAttribute("stroke", "#1976d2");
+ currentLine.setAttribute("stroke-width", "2");
+ currentLine.setAttribute("points", `${x},${y}`);
+ svg.appendChild(currentLine);
+ }
+ function draw(event) {
+ if (!isDrawing)
+ return;
+ const { x, y } = getMousePosition(event);
+ const points = currentLine.getAttribute("points");
+ currentLine.setAttribute("points", `${points} ${x},${y}`);
+ }
+ function stopDrawing() {
+ isDrawing = false;
+ currentLine = null;
+ }
+ 
+function getMousePosition(event) {
+ const rect = svg.getBoundingClientRect();
+ return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+ }
+ function clearCanvas() {
+ while (svg.firstChild) {
+ svg.removeChild(svg.firstChild);
+ }
+ }
+</script>
+</body>
+</html>
